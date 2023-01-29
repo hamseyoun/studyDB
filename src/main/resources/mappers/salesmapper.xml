@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co1.kr1.mono1.studydb1.dao.AreaSalesDao">
+
+    <!-- 1. resultType이 DTO인것 -->
+    <select id="findAreaSales" parameterType="String" resultType="AreaSalesDto">
+        SELECT
+            AREA_CD AREACD
+           ,REGION_AREA REGIONAREA
+           ,PROD_ID PRODID
+           ,SUM(SALE_CNT) SALECNT
+        FROM SALE_TBL
+        WHERE AREA_CD = #{AREA_CD}
+        AND ROWNUM =1
+        GROUP BY AREA_CD
+               ,REGION_AREA
+               ,PROD_ID
+    </select>
+
+    <!-- 2. resultType이 Map인것 -->
+    <select id="findAreaSalesMap" parameterType="String" resultType="map">
+        SELECT
+        AREA_CD AREACD
+            ,REGION_AREA REGIONAREA
+            ,PROD_ID PRODID
+            ,SUM(SALE_CNT) SALECNT
+        FROM SALE_TBL
+        WHERE AREA_CD = #{AREA_CD}
+        AND ROWNUM =1
+        GROUP BY AREA_CD
+               ,REGION_AREA
+               ,PROD_ID
+    </select>
+
+
+    <select id="findMsaleByMultiParm" parameterType="hashmap" resultType="hashmap">
+        SELECT PRODID
+               ,PRODNM
+              ,SALECNT
+        FROM MSALES
+        WHERE PRODID LIKE #{PRODID}||'%'
+        AND PRODNM LIKE #{PRODNM}||'%'
+        AND ROWNUM = 1
+    </select>
+
+    <select id="findMsaleByMultiReturn" parameterType="hashmap" resultType="hashmap">
+        SELECT PRODID
+        ,PRODNM
+        ,SALECNT
+        FROM MSALES
+        WHERE PRODID LIKE #{PRODID}||'%'
+        AND PRODNM LIKE #{PRODNM,jdbcType=VARCHAR}||'%' <!-- jdbcType=VARCHAR 는 null값이 들어와도 에러가 뜨지 않게 해주는것-->
+    </select>
+
+
+</mapper>

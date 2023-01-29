@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co1.kr1.mono1.studydb1.dao.MusicJoinDao">
+
+    <resultMap id="selectArtistAlbumMap" type="Album">
+    <!-- type은 return type 을 의미한다. 여기서 return type은 Album DTO이기 때문에 클래스명인 Album이라고 작성해줌 -->
+        <id column="album_Id" property="albumId" jdbcType="VARCHAR"/>
+        <result column="album_Seq" property="albumSeq" jdbcType="INTEGER"/>
+        <result column="album_Title" property="albumTitle" jdbcType="VARCHAR"/>
+        <result column="open_Date" property="openDate" jdbcType="VARCHAR"/>
+        <association property="artist" javaType="Artist">
+            <id column="mst_Id" property="mstId" jdbcType="VARCHAR"/>
+            <result column="mst_Name" property="mstName" jdbcType="VARCHAR"/>
+            <result column="debut_Date" property="debutDate" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="selectArtistByPrimaryKey1" parameterType="string" resultMap="selectArtistAlbumMap">
+        SELECT
+            A.MST_ID        MST_ID
+            ,A.MST_NAME     MST_NAME
+            ,A.DEBUT_DATE   DEBUT_DATE
+            ,B.ALBUM_ID     ALBUM_ID
+            ,B.ALBUM_SEQ    ALBUM_SEQ
+            ,B.ALBUM_TITLE  ALBUM_TITLE
+            ,B.OPEN_DATE    OPEN_DATE
+        FROM ARTIST A, ALBUM B
+        WHERE A.MST_ID = B.MST_ID
+        AND B.MST_ID = #{mst_id,jdbcType=VARCHAR}
+    </select>
+
+
+    <resultMap id="selectArtistPkAlbumMap" type="Artist">
+        <id column="mst_Id" property="mstId" jdbcType="VARCHAR"/>
+        <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>
+        <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>
+        <collection property="album" javaType="java.util.ArrayList" ofType="Album">
+            <id column="album_Id" property="albumId" jdbcType="VARCHAR"/>
+            <result column="album_Seq" property="albumSeq" jdbcType="VARCHAR"/>
+            <result column="album_Title" property="albumTitle" jdbcType="VARCHAR"/>
+            <result column="open_Date" property="openDate" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectArtistByPrimaryKey2" parameterType="string" resultMap="selectArtistPkAlbumMap">
+        SELECT
+            A.MST_ID        MST_ID
+            ,A.MST_NAME     MST_NAME
+            ,A.DEBUT_DATE   DEBUT_DATE
+            ,B.ALBUM_ID     ALBUM_ID
+            ,B.ALBUM_SEQ    ALBUM_SEQ
+            ,B.ALBUM_TITLE  ALBUM_TITLE
+            ,B.OPEN_DATE    OPEN_DATE
+        FROM ARTIST A, ALBUM B
+        WHERE A.MST_ID = B.MST_ID
+        AND B.MST_ID = #{mst_id,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>
