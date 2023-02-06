@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co1.kr1.mono1.studydb1.dao.DynamicDmlDao">
+
+    <select id="insertOne" parameterType="ExamVO">
+        INSERT INTO EXAM_RSLT_DEMO(
+            NAME
+            ,ClASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        )
+        VALUES
+        (
+            #{name, jdbcType=VARCHAR},
+            #{className, jdbcType=VARCHAR},
+            #{grade, jdbcType=VARCHAR},
+            #{kor, jdbcType=INTEGER},
+            #{eng, jdbcType=INTEGER},
+            #{mat, jdbcType=INTEGER}
+        )
+    </select>
+
+</mapper>

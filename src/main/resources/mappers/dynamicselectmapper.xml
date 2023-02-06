@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co1.kr1.mono1.studydb1.dao.DynamicSelectDao">
+
+    <select id="subQueryInList" parameterType="list" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE CLASS IN
+        <foreach collection="list" index="index" item="classId" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </select>
+    <!--
+    collection: 전달받은 인자의 값, -list나 array형태만 가능
+    item: 전달받은 인자 값의 alias 명
+    open: 해당 구문이 시작될 때 삽입할 문자열
+    close: 해당 구문이 종료될 때 삽입할 문자열
+    separator: 반복되는 사이에 삽입할 문자열
+    index: 반복되는 구문 번호(목록의 위치 값)
+    -->
+
+
+    <select id="findGradeWithClassLike1" parameterType="string" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE GRADE = 1
+        <if test="name != null">
+            AND NAME LIKE #{name}
+        </if>
+          AND ROWNUM = 1
+    </select>
+
+
+    <select id="findGradeWithClassLike2" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE 1=1
+        <if test="grade != null">
+          AND GRADE <![CDATA[>=]]> #{grade}
+        </if>
+        <if test="name != null">
+          AND NAME LIKE #{name}||'%'
+        </if>
+    </select>
+
+    <select id="findExamTrim" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="name != null">
+                AND NAME LIKE #{name}
+            </if>
+            <if test="grade != null">
+                OR GRADE <![CDATA[>=]]> #{grade}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="findChooseExam" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE 1=1
+        <choose>
+            <when test="name != null">
+                AND NAME LIKE #{name}
+            </when>
+            <when test="grade != null">
+                AND GRADE = #{grade}
+            </when>
+            <otherwise>
+                AND GRADE <![CDATA[>=]]> 1
+            </otherwise>
+        </choose>
+    </select>
+</mapper>
