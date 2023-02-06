@@ -45,4 +45,65 @@
           AND ROWNUM = 1
     </select>
 
+
+    <select id="findGradeWithClassLike2" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE 1=1
+        <if test="grade != null">
+          AND GRADE <![CDATA[>=]]> #{grade}
+        </if>
+        <if test="name != null">
+          AND NAME LIKE #{name}||'%'
+        </if>
+    </select>
+
+    <select id="findExamTrim" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="name != null">
+                AND NAME LIKE #{name}
+            </if>
+            <if test="grade != null">
+                OR GRADE <![CDATA[>=]]> #{grade}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="findChooseExam" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            NAME
+            ,CLASS
+            ,GRADE
+            ,KOR
+            ,ENG
+            ,MAT
+        FROM EXAM_RSLT
+        WHERE 1=1
+        <choose>
+            <when test="name != null">
+                AND NAME LIKE #{name}
+            </when>
+            <when test="grade != null">
+                AND GRADE = #{grade}
+            </when>
+            <otherwise>
+                AND GRADE <![CDATA[>=]]> 1
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
